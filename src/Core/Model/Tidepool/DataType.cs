@@ -7,5 +7,6 @@
         PhysicalActivity,
         PumpSettings,
         Cbg,
+        Smbg
     }
 }

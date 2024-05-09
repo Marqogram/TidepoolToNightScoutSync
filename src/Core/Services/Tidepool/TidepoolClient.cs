@@ -53,12 +53,18 @@ namespace TidepoolToNightScoutSync.Core.Services.Tidepool
                 .AsArray<PumpSettings>();
 
         public async Task<IReadOnlyList<BgValue>> GetBgValues(DateTime? start = null,
-            DateTime? end = null) =>
-            await _client
+            DateTime? end = null)
+        {
+            // https://tidepool.stoplight.io/docs/tidepool-api/47411eab004f3-common-fields
+            // type
+            // Allowed values: cbg, smbg
+            var types = string.Join(',', nameof(DataType.Cbg), nameof(DataType.Smbg));
+            return await _client
                 .GetAsync($"data/{_options.UserId}")
                 .WithArgument("startDate", start?.ToUniversalTime().ToString("o"))
                 .WithArgument("endDate", end?.ToUniversalTime().ToString("o"))
-                .WithArgument("type", nameof(DataType.Cbg).ToLower())
+                .WithArgument("type", types.ToLower())
                 .AsArray<BgValue>();
+        }
     }
 }
