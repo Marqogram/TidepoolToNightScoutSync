@@ -61,5 +61,10 @@ namespace TidepoolToNightScoutSync.Core.Services.Nightscout
                 .WithArgument("find", find)
                 .WithArgument("count", count)
                 .AsArray<Treatment>();
+
+        public async Task<Status> GetStatus() =>
+            await _client
+                .GetAsync("api/v1/status.json")
+                .As<Status>();
     }
 }
