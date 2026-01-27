@@ -22,7 +22,7 @@ jobs:
       run: dotnet restore
 
     - name: Run Tidepool → Nightscout sync
-      run: dotnet run
+      run: dotnet run --project src/CLI/CLI.csproj
       env:
         TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
         TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
