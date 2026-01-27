@@ -1,0 +1,35 @@
+name: Tidepool → Nightscout Sync
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
+
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Run Tidepool → Nightscout sync
+      run: dotnet run
+      env:
+        TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
+        TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
+        NIGHTSCOUT__URL: ${{ secrets.NIGHTSCOUT_URL }}
+        NIGHTSCOUT__APISECRET: ${{ secrets.NIGHTSCOUT_API_SECRET }}
+        SYNC__DAYSTOSYNC: 2
+        SYNC__UPLOADBOLUSES: true
+        SYNC__UPLOADCARBS: true
+        SYNC__UPLOADBASALS: true
+        SYNC__UPLOADBGS: true
