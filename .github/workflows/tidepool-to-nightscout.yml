@@ -2,7 +2,7 @@ name: Tidepool → Nightscout Sync
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/5 * * * *"   # runs every 5 minutes
   workflow_dispatch:
 
 jobs:
@@ -10,37 +10,42 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup .NET SDK
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
 
+      # 3️⃣ Restore dependencies
       - name: Restore dependencies
         run: dotnet restore
 
-      # 🔎 Diagnostic: is the secret visible at all?
-      - name: Check Nightscout secret visibility
+      # 4️⃣ Diagnostic: check if Nightscout secret is injected
+      - name: Check Nightscout secret presence
         run: |
           if [ -z "${{ secrets.NIGHTSCOUT__BASEURL }}" ]; then
-            echo "Secret NIGHTSCOUT__BASEURL is NOT visible to this workflow"
+            echo "❌ Secret NIGHTSCOUT__BASEURL is NOT visible"
+            exit 1
           else
-            echo "Secret NIGHTSCOUT__BASEURL is visible"
+            echo "✅ Secret NIGHTSCOUT__BASEURL is visible"
           fi
 
-      # 🔎 Diagnostic: validate format (still masked)
+      # 5️⃣ Validate Nightscout URL format
       - name: Validate Nightscout URL format
         env:
           NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
         run: |
           echo "Length: ${#NIGHTSCOUT__BASEURL}"
           if [[ ! "$NIGHTSCOUT__BASEURL" =~ ^https:// ]]; then
-            echo "ERROR: Nightscout URL must start with https://"
+            echo "❌ ERROR: Nightscout URL must start with https://"
             exit 1
           fi
 
+      # 6️⃣ Run the Tidepool → Nightscout sync
       - name: Run Tidepool → Nightscout sync
         env:
           TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL__USERNAME }}
