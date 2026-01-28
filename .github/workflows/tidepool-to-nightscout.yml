@@ -18,27 +18,23 @@ jobs:
       with:
         dotnet-version: '8.x'
 
-    - name: Restore dependencies
+     - name: Restore dependencies
       run: dotnet restore
 
     - name: Validate Nightscout URL format
-  run: |
-    echo "Length: ${#NIGHTSCOUT__URL}"
-    if [[ ! "$NIGHTSCOUT__URL" =~ ^https:// ]]; then
-      echo "ERROR: URL does not start with https://"
-      exit 1
-    fi
-  env:
-    NIGHTSCOUT__URL: ${{ secrets.NIGHTSCOUT_URL }}
-    
-      run: dotnet run --project src/CLI/CLI.csproj
+      env:
+        NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+      run: |
+        echo "Length: ${#NIGHTSCOUT__BASEURL}"
+        if [[ ! "$NIGHTSCOUT__BASEURL" =~ ^https:// ]]; then
+          echo "ERROR: Nightscout URL must start with https://"
+          exit 1
+        fi
+
+    - name: Run sync
       env:
         TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
         TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
-        NIGHTSCOUT__URL: ${{ secrets.NIGHTSCOUT_URL }}
-        NIGHTSCOUT__APISECRET: ${{ secrets.NIGHTSCOUT_API_SECRET }}
-        SYNC__DAYSTOSYNC: 2
-        SYNC__UPLOADBOLUSES: true
-        SYNC__UPLOADCARBS: true
-        SYNC__UPLOADBASALS: true
-        SYNC__UPLOADBGS: true
+        NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+        NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
+      run: dotnet run --project src/CLI/CLI.csproj
