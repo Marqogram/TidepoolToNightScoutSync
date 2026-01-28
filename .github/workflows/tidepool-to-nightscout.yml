@@ -18,7 +18,7 @@ jobs:
       with:
         dotnet-version: '8.x'
 
-     - name: Restore dependencies
+    - name: Restore dependencies
       run: dotnet restore
 
     - name: Validate Nightscout URL format
@@ -35,6 +35,10 @@ jobs:
       env:
         TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
         TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
+        NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+        NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
+      run: dotnet run --project src/CLI/CLI.csproj
+            run: dotnet run --project src/CLI/CLI.csprojrun: dotnet run --project src/CLI/CLI.csproj
         NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
         NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
       run: dotnet run --project src/CLI/CLI.csproj
