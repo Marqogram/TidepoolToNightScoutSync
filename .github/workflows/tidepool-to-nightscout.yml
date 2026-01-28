@@ -21,7 +21,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    -- name: run Tidepool → Nightscout Sync
+    - name: run Tidepool → Nightscout Sync
       run: dotnet run --project src/CLI/CLI.csproj
       env:
         TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
