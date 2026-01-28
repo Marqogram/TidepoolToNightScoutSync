@@ -19,8 +19,13 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      # ---- DEBUG STEP (IMPORTANT) ----
-      - name: Debug Nightscout URL
+           - - name: Validate Nightscout URL format
+  run: |
+    echo "Length: ${#NIGHTSCOUT__URL}"
+    if [[ ! "$NIGHTSCOUT__URL" =~ ^https:// ]]; then
+      echo "ERROR: URL does not start with https://"
+      exit 1
+    fi
         run: |
           echo "Nightscout URL='${{ secrets.NIGHTSCOUT_URL }}'"
 
