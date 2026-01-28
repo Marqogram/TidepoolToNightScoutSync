@@ -2,7 +2,7 @@ name: Tidepool → Nightscout Sync
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,35 +10,31 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: '8.x'
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
 
-    - name: Restore dependencies
-      run: dotnet restore
+      - name: Restore dependencies
+        run: dotnet restore
 
-    - name: Validate Nightscout URL format
-      env:
-        NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
-      run: |
-        echo "Length: ${#NIGHTSCOUT__BASEURL}"
-        if [[ ! "$NIGHTSCOUT__BASEURL" =~ ^https:// ]]; then
-          echo "ERROR: Nightscout URL must start with https://"
-          exit 1
-        fi
+      - name: Validate Nightscout URL format
+        env:
+          NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+        run: |
+          echo "Length: ${#NIGHTSCOUT__BASEURL}"
+          if [[ ! "$NIGHTSCOUT__BASEURL" =~ ^https:// ]]; then
+            echo "ERROR: Nightscout URL must start with https://"
+            exit 1
+          fi
 
-    - name: Run sync
-      env:
-        TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
-        TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
-        NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
-        NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
-      run: dotnet run --project src/CLI/CLI.csproj
-            run: dotnet run --project src/CLI/CLI.csprojrun: dotnet run --project src/CLI/CLI.csproj
-        NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
-        NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
-      run: dotnet run --project src/CLI/CLI.csproj
+      - name: Run Tidepool → Nightscout sync
+        env:
+          TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
+          TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
+          NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+          NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
+        run: dotnet run --project src/CLI/CLI.csproj
