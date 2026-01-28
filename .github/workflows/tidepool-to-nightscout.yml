@@ -22,6 +22,15 @@ jobs:
       run: dotnet restore
 
     - name: Run Tidepool → Nightscout sync
+
+- name: Validate Nightscout URL format
+  run: |
+    echo "Length: ${#NIGHTSCOUT__URL}"
+    if [[ ! "$NIGHTSCOUT__URL" =~ ^https:// ]]; then
+      echo "ERROR: URL does not start with https://"
+      exit 1
+    fi
+    
       run: dotnet run --project src/CLI/CLI.csproj
       env:
         TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
