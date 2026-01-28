@@ -1,0 +1,37 @@
+name: Tidepool → Nightscout Sync
+
+on:
+  schedule:
+    # every 5 minutes
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      # ---- DEBUG STEP (IMPORTANT) ----
+      - name: Debug Nightscout URL
+        run: |
+          echo "Nightscout URL='${{ secrets.NIGHTSCOUT_URL }}'"
+
+      - name: Run Tidepool → Nightscout sync
+        run: dotnet run --project src/CLI/CLI.csproj
+        env:
+          # Tidepool
+          TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL_USERNAME }}
+          TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL_PASSWORD }}
+          TIDEPOOL__USERID: ${{ secrets.TIDEPOOL_USERID }}
+
+          # Nightscout
+          NIGHTSCOUT__URL: ${{ secrets.NIGHTSCOUT_URL }}
+          NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT_APIKEY }}
