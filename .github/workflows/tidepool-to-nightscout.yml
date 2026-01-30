@@ -9,6 +9,14 @@ jobs:
   sync:
     runs-on: ubuntu-latest
 
+    env:
+      TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL__USERNAME }}
+      TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL__PASSWORD }}
+      NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+      NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT__APIKEY }}
+      NIGHTSCOUT_BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
+      NIGHTSCOUT_API_SECRET: ${{ secrets.NIGHTSCOUT__APIKEY }}
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -23,20 +31,16 @@ jobs:
 
       - name: Run Tidepool → Nightscout sync
         run: dotnet run --project src/CLI/CLI.csproj
+
       - name: Send CGM heartbeat to Nightscout
         run: |
-           curl -s -X POST "${NIGHTSCOUT_BASEURL}/api/v1/devicestatus" \
-           -H "Content-Type: application/json" \
-           -H "API-SECRET: ${NIGHTSCOUT_API_SECRET}" \
-           -d '{
-            "device": "CGM",
-            "created_at": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'",
-            "uploader": {
-              "battery": 100
-            }
-           }'    
-        env:
-          TIDEPOOL__USERNAME: ${{ secrets.TIDEPOOL__USERNAME }}
-          TIDEPOOL__PASSWORD: ${{ secrets.TIDEPOOL__PASSWORD }}
-          NIGHTSCOUT__BASEURL: ${{ secrets.NIGHTSCOUT__BASEURL }}
-          NIGHTSCOUT__APIKEY: ${{ secrets.NIGHTSCOUT__APIKEY }}
+          curl -s -X POST "${NIGHTSCOUT_BASEURL}/api/v1/devicestatus" \
+            -H "Content-Type: application/json" \
+            -H "API-SECRET: ${NIGHTSCOUT_API_SECRET}" \
+            -d '{
+              "device": "CGM",
+              "created_at": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'",
+              "uploader": {
+                "battery": 100
+              }
+            }'    
