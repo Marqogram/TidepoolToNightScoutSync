@@ -36,11 +36,11 @@ jobs:
         run: |
           curl -s -X POST "${NIGHTSCOUT_BASEURL}/api/v1/devicestatus" \
             -H "Content-Type: application/json" \
-            -H "API-SECRET: ${NIGHTSCOUT_API_SECRET}" \
+            -H "api-secret: ${NIGHTSCOUT_API_SECRET}" \
             -d '{
               "device": "CGM",
               "created_at": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'",
               "uploader": {
                 "battery": 100
               }
-            }'    
+            }'
