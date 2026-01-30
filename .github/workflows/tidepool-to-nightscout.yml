@@ -32,15 +32,4 @@ jobs:
       - name: Run Tidepool → Nightscout sync
         run: dotnet run --project src/CLI/CLI.csproj
 
-      - name: Send CGM heartbeat to Nightscout
-        run: |
-          curl -s -X POST "${NIGHTSCOUT_BASEURL}/api/v1/devicestatus" \
-            -H "Content-Type: application/json" \
-            -H "api-secret: ${NIGHTSCOUT_API_SECRET}" \
-            -d '{
-              "device": "CGM",
-              "created_at": "'"$(date -u +"%Y-%m-%dT%H:%M:%SZ")"'",
-              "uploader": {
-                "battery": 100
-              }
-            }'
+
