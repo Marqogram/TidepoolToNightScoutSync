@@ -32,3 +32,4 @@ var services = new ServiceCollection()
 var syncer = services.GetRequiredService<TidepoolToNightScoutSyncer>();
 await syncer.SyncProfiles();
 await syncer.SyncAsync();
+await syncer.SyncCgmAsync();
