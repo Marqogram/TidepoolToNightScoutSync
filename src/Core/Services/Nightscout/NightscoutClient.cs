@@ -36,11 +36,8 @@ namespace TidepoolToNightScoutSync.Core.Services.Nightscout
         }
 
         /* -------------------- Profiles -------------------- */
-
         public async Task<IReadOnlyList<Profile>> GetProfiles() =>
-            await _client
-                .GetAsync("api/v1/profile")
-                .AsArray<Profile>();
+            await _client.GetAsync("api/v1/profile").AsArray<Profile>();
 
         public async Task<Profile> SetProfile(Profile profile) =>
             await _client
@@ -49,7 +46,6 @@ namespace TidepoolToNightScoutSync.Core.Services.Nightscout
                 .As<Profile>();
 
         /* -------------------- Treatments -------------------- */
-
         public async Task<IReadOnlyList<Treatment>> AddTreatmentsAsync(IEnumerable<Treatment> treatments) =>
             await _client
                 .PostAsync("api/v1/treatments", treatments)
@@ -63,23 +59,15 @@ namespace TidepoolToNightScoutSync.Core.Services.Nightscout
                 .WithArgument("count", count)
                 .AsArray<Treatment>();
 
-        /* -------------------- CGM Entries (NEW) -------------------- */
-
-        /// <summary>
-        /// Upload CGM entries (type: sgv) so Nightscout recognizes live CGM data.
-        /// </summary>
-        public async Task AddEntriesAsync(IEnumerable<Entry> entries)
-        {
+        /* -------------------- CGM Entries -------------------- */
+        public async Task AddEntriesAsync(IEnumerable<Entry> entries) =>
             await _client
                 .PostAsync("api/v1/entries", entries)
                 .WithHeader("api-secret", SHA1(_options.ApiKey))
-                .AsString(); // response body not needed
-        }
-    }
-        /* -------------------- Status -------------------- */
+                .AsString();
 
+        /* -------------------- Status -------------------- */
         public async Task<Status> GetStatus() =>
-            await _client
-                .GetAsync("api/v1/status.json")
-                .As<Status>();
-    }
+            await _client.GetAsync("api/v1/status.json").As<Status>();
+    } // end class
+} // end namespace
