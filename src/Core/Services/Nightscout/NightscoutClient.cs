@@ -75,7 +75,7 @@ namespace TidepoolToNightScoutSync.Core.Services.Nightscout
                 .WithHeader("api-secret", SHA1(_options.ApiKey))
                 .AsString(); // response body not needed
         }
-
+    }
         /* -------------------- Status -------------------- */
 
         public async Task<Status> GetStatus() =>
